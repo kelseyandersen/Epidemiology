@@ -1,1 +1,9 @@
 
+name: "my-website"
+navbar:
+  title: "Kelsey Andersen"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
