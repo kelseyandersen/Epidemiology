@@ -13,4 +13,4 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Website
-WebsitePath: ~/Dropbox/Graduate School UF/myrepo
+WebsitePath: ~/Dropbox/Graduate School UF/kelseyandersen
