@@ -2,7 +2,6 @@
 title: "About Me"
 author: "Kelsey Andersen"
 date: "June 22, 2018"
-output: html_document
 ---
 
 
