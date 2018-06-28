@@ -3,3 +3,8 @@ title: "Kelsey Andersen"
 ---
 
 Hello, Welcome! 
+
+
+```{r Render}
+rmarkdown::render_site(encoding = "UTF-8")
+```
