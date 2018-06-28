@@ -9,5 +9,8 @@ navbar:
       href: about.html
 output:
   html_document:
-    theme: paper
+    theme: cerulean
     css: 'styles.css'
+    toc: true  
+    toc_float: true  
+output_dir: "."
