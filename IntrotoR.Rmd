@@ -50,52 +50,52 @@ library(ggplot2)
 
 
 
-## Getting Data Into R
+<!-- ## Getting Data Into R -->
 
-Now make sure to place your "StripeRust.csv" file in the working directory that we set, then load the data in using the "read.csv" *function*. 
-```{r}
-RustData <- read.csv("StripeRust.csv", header = TRUE) 
-  #Header = TRUE lets R know that we have headings in the first row of our data set. 
+<!-- Now make sure to place your "StripeRust.csv" file in the working directory that we set, then load the data in using the "read.csv" *function*.  -->
+<!-- ```{r} -->
+<!-- RustData <- read.csv("StripeRust.csv", header = TRUE)  -->
+<!--   #Header = TRUE lets R know that we have headings in the first row of our data set.  -->
 
-head(RustData) ## check the first few rows of the dataset
-names(RustData) ## check the column headers
-```
-
-
-> #### Note: this data is disease severity ratings taken in a wheat stripe rust nursury over the course of two seasons. "DAI" = days after inoculation. 
+<!-- head(RustData) ## check the first few rows of the dataset -->
+<!-- names(RustData) ## check the column headers -->
+<!-- ``` -->
 
 
-We can plot this data using ggplot2. Tell the graphing function to use the data "RustData" and then add a layer to the plot with the geom_point() function with severity on the y axis and time on the x axis. Color the points by the year that data was collected. 
-```{r}
-ggplot(data = RustData) +
-  geom_point(mapping = aes(x = DAI, y = Severity, color = Year))
-```
-
->#### Note: It looks like disease took longer to develop in year 2, and was less severe by day 100.
+<!-- > #### Note: this data is disease severity ratings taken in a wheat stripe rust nursury over the course of two seasons. "DAI" = days after inoculation.  -->
 
 
-If we switch from the function "geom_point" to "geom_line" we can plot lines and not points.  
-```{r}
-ggplot(data = RustData) +
-  geom_line(mapping = aes(x = DAI, y = Severity, color = Year))
-```
+<!-- We can plot this data using ggplot2. Tell the graphing function to use the data "RustData" and then add a layer to the plot with the geom_point() function with severity on the y axis and time on the x axis. Color the points by the year that data was collected.  -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_point(mapping = aes(x = DAI, y = Severity, color = Year)) -->
+<!-- ``` -->
 
-We can look at the graphs side-by-side using the facet_wrap() function. 
-```{r}
-ggplot(data = RustData) +
-  geom_point(mapping = aes(x = DAI, y = Severity)) +
-  facet_wrap(~Year) 
-```
-  
-> #### Note: be sure to include a "+" at the end of each line, until you want to close the command.   
-  
-Finally, lets add a title! 
-```{r}
-ggplot(data = RustData) +
-  geom_point(mapping = aes(x = DAI, y = Severity, color = Year)) +
-  facet_wrap(~Year) +
-  labs(title = "Stripe Rust Severity Over Time")
-```
+<!-- >#### Note: It looks like disease took longer to develop in year 2, and was less severe by day 100. -->
+
+
+<!-- If we switch from the function "geom_point" to "geom_line" we can plot lines and not points.   -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_line(mapping = aes(x = DAI, y = Severity, color = Year)) -->
+<!-- ``` -->
+
+<!-- We can look at the graphs side-by-side using the facet_wrap() function.  -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_point(mapping = aes(x = DAI, y = Severity)) + -->
+<!--   facet_wrap(~Year)  -->
+<!-- ``` -->
+
+<!-- > #### Note: be sure to include a "+" at the end of each line, until you want to close the command.    -->
+
+<!-- Finally, lets add a title!  -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_point(mapping = aes(x = DAI, y = Severity, color = Year)) + -->
+<!--   facet_wrap(~Year) + -->
+<!--   labs(title = "Stripe Rust Severity Over Time") -->
+<!-- ``` -->
 
 ## Vectors
 

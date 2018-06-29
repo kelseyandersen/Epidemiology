@@ -342,51 +342,40 @@ b</code></pre></div>
 <blockquote>
 <h4 id="note-if-you-have-installed-an-r-package-once-on-your-computer-you-will-not-need-to-install-it-again.-you-will-need-to-load-the-library-at-the-begining-of-each-new-session-using-the-library-function">Note: if you have installed an R package once on your computer, you will not need to install it again. You will need to <em>load</em> the library at the begining of each new session using the library() function</h4>
 </blockquote>
-</div>
-<div id="getting-data-into-r" class="section level2">
-<h2>Getting Data Into R</h2>
-<p>Now make sure to place your “StripeRust.csv” file in the working directory that we set, then load the data in using the “read.csv” <em>function</em>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RustData &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;StripeRust.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>) 
-  <span class="co">#Header = TRUE lets R know that we have headings in the first row of our data set. </span>
-
-<span class="kw">head</span>(RustData) ## check the first few rows of the dataset</code></pre></div>
-<pre><code>##     Year DAI Severity
-## 1 Year 1  10        0
-## 2 Year 1  20        0
-## 3 Year 1  30        0
-## 4 Year 1  40        3
-## 5 Year 1  50       20
-## 6 Year 1  60       50</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(RustData) ## check the column headers</code></pre></div>
-<pre><code>## [1] &quot;Year&quot;     &quot;DAI&quot;      &quot;Severity&quot;</code></pre>
-<blockquote>
-<h4 id="note-this-data-is-disease-severity-ratings-taken-in-a-wheat-stripe-rust-nursury-over-the-course-of-two-seasons.-dai-days-after-inoculation.">Note: this data is disease severity ratings taken in a wheat stripe rust nursury over the course of two seasons. “DAI” = days after inoculation.</h4>
-</blockquote>
-<p>We can plot this data using ggplot2. Tell the graphing function to use the data “RustData” and then add a layer to the plot with the geom_point() function with severity on the y axis and time on the x axis. Color the points by the year that data was collected.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity, <span class="dt">color =</span> Year))</code></pre></div>
-<p><img src="IntrotoR_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<blockquote>
-<h4 id="note-it-looks-like-disease-took-longer-to-develop-in-year-2-and-was-less-severe-by-day-100.">Note: It looks like disease took longer to develop in year 2, and was less severe by day 100.</h4>
-</blockquote>
-<p>If we switch from the function “geom_point” to “geom_line” we can plot lines and not points.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity, <span class="dt">color =</span> Year))</code></pre></div>
-<p><img src="IntrotoR_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>We can look at the graphs side-by-side using the facet_wrap() function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity)) +
-<span class="st">  </span><span class="kw">facet_wrap</span>(~Year) </code></pre></div>
-<p><img src="IntrotoR_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<blockquote>
-<h4 id="note-be-sure-to-include-a-at-the-end-of-each-line-until-you-want-to-close-the-command.">Note: be sure to include a “+” at the end of each line, until you want to close the command.</h4>
-</blockquote>
-<p>Finally, lets add a title!</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity, <span class="dt">color =</span> Year)) +
-<span class="st">  </span><span class="kw">facet_wrap</span>(~Year) +
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Stripe Rust Severity Over Time&quot;</span>)</code></pre></div>
-<p><img src="IntrotoR_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<!-- ## Getting Data Into R -->
+<!-- Now make sure to place your "StripeRust.csv" file in the working directory that we set, then load the data in using the "read.csv" *function*.  -->
+<!-- ```{r} -->
+<!-- RustData <- read.csv("StripeRust.csv", header = TRUE)  -->
+<!--   #Header = TRUE lets R know that we have headings in the first row of our data set.  -->
+<!-- head(RustData) ## check the first few rows of the dataset -->
+<!-- names(RustData) ## check the column headers -->
+<!-- ``` -->
+<!-- > #### Note: this data is disease severity ratings taken in a wheat stripe rust nursury over the course of two seasons. "DAI" = days after inoculation.  -->
+<!-- We can plot this data using ggplot2. Tell the graphing function to use the data "RustData" and then add a layer to the plot with the geom_point() function with severity on the y axis and time on the x axis. Color the points by the year that data was collected.  -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_point(mapping = aes(x = DAI, y = Severity, color = Year)) -->
+<!-- ``` -->
+<!-- >#### Note: It looks like disease took longer to develop in year 2, and was less severe by day 100. -->
+<!-- If we switch from the function "geom_point" to "geom_line" we can plot lines and not points.   -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_line(mapping = aes(x = DAI, y = Severity, color = Year)) -->
+<!-- ``` -->
+<!-- We can look at the graphs side-by-side using the facet_wrap() function.  -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_point(mapping = aes(x = DAI, y = Severity)) + -->
+<!--   facet_wrap(~Year)  -->
+<!-- ``` -->
+<!-- > #### Note: be sure to include a "+" at the end of each line, until you want to close the command.    -->
+<!-- Finally, lets add a title!  -->
+<!-- ```{r} -->
+<!-- ggplot(data = RustData) + -->
+<!--   geom_point(mapping = aes(x = DAI, y = Severity, color = Year)) + -->
+<!--   facet_wrap(~Year) + -->
+<!--   labs(title = "Stripe Rust Severity Over Time") -->
+<!-- ``` -->
 </div>
 <div id="vectors" class="section level2">
 <h2>Vectors</h2>
@@ -410,7 +399,7 @@ WithR</code></pre></div>
 <pre><code>## [1] 2.795945</code></pre>
 <p>And graph a histogram of this distribution!</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(WithR, <span class="dt">xlab =</span> <span class="st">&quot;Self-Reported R Proficiency&quot;</span>)</code></pre></div>
-<p><img src="IntrotoR_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="IntrotoR_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <blockquote>
 <h3 id="notice-that-i-choose-to-name-my-new-object-withr.">Notice that I choose to name my new object “WithR”.</h3>
 <h3 id="it-is-important-to-note-that">It is important to note that:</h3>
