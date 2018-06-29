@@ -7,9 +7,18 @@ navbar:
       href: index.html
     - text: "About"
       href: about.html
+  right:
+    - icon: fa-envelope fa-lg
+      href: contact.html
+    - icon: fa-github fa-lg
+      href: http://github.com/kelseyandersen
+    - icon: fa-twitter fa-lg
+      href: https://twitter.com/KelseyFAndersen
+    - icon: fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/kelseyandersen/
 output:
   html_document:
-    theme: cerulean
+    theme: paper
     css: 'styles.css'
     toc: true  
     toc_float: true  
