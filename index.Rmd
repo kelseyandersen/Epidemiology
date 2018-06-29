@@ -1,12 +1,3 @@
 ---
-title: "Hi, I'm Kelsey!"
+title: "Introduction"
 ---
-
-<link rel="stylesheet" href="styles.css" type="text/css">
-
-
-<img src="images/me.jpg" style="width:25%; border:4px solid; margin-right: 60px" align="left">
-
-##About Me
-
-I am currently a PhD student in Karen Garrett's Lab (www.garrettlab.com) in the department of plant pathology at the University of Florida. I am currently very interested in using network models to understand plant disease epidemics on a landscape level. 

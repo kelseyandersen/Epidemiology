@@ -1,26 +1,18 @@
 
-name: "my-website"
+name: "Epidemiology and Data Science"
+output_dir: "."
 navbar:
-  title: "Kelsey Andersen"
+  title: "Epidemiology"
   left:
     - text: "About"
       href: index.html
-    - text: "CV"
-      href: about.html
-  right:
-    - icon: fa-envelope fa-lg
-      href: contact.html
-    - icon: fa-github fa-lg
-      href: http://github.com/kelseyandersen
-    - icon: fa-twitter fa-lg
-      href: https://twitter.com/KelseyFAndersen
-    - icon: fa-linkedin fa-lg
-      href: https://www.linkedin.com/in/kelseyandersen/
+    - text: "Introduction to R"
+      href: IntrotoR.html
 output:
   html_document:
-    theme: flatly
+    theme: paper
     highlight: monochrome
     css: 'styles.css'
-    #toc: true  
-    #toc_float: true  
-output_dir: "."
+    toc: true  
+    toc_float: true  
+
