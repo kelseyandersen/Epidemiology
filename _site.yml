@@ -2,7 +2,7 @@
 name: "Epidemiology and Data Science"
 output_dir: "."
 navbar:
-  title: "Epidemiology"
+  title: "Epidem & Data Sci"
   left:
     - text: "About"
       href: index.html

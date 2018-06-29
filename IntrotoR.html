@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Introduction to R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { font-weight: bold; } /* Keyword */
+code > span.dt { text-decoration: underline; } /* DataType */
+code > span.co { font-style: italic; } /* Comment */
+code > span.al { font-weight: bold; } /* Alert */
+code > span.er { font-weight: bold; } /* Error */
+code > span.wa { font-style: italic; } /* Warning */
+code > span.cf { font-weight: bold; } /* ControlFlow */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.do { font-style: italic; } /* Documentation */
+code > span.an { font-style: italic; } /* Annotation */
+code > span.cv { font-style: italic; } /* CommentVar */
+code > span.in { font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Epidem & Data Sci</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">About</a>
+</li>
+<li>
+  <a href="IntrotoR.html">Introduction to R</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to R</h1>
+
+</div>
+
+
+<div id="set-working-directory" class="section level3">
+<h3>Set working directory</h3>
+<p>First, set your working directory. This is a folder in which you will save this script, along with any files that will be used as part of your analyses.</p>
+</div>
+<div id="r-is-essentially-a-fancy-calculator" class="section level3">
+<h3>R is essentially a fancy calculator:</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1+1</span></code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">3</span>*<span class="dv">2</span></code></pre></div>
+<pre><code>## [1] 6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">8</span>^<span class="dv">8</span></code></pre></div>
+<pre><code>## [1] 16777216</code></pre>
+<p>To make programming simpler, we usually save values or sets of values that we want to use again as “objects”. We do this using the symbols “&lt;-” (called the “gets arrow”).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="dv">2</span> +<span class="st"> </span><span class="dv">2</span>
+a</code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span>a +<span class="st"> </span><span class="dv">2</span>
+b</code></pre></div>
+<pre><code>## [1] 6</code></pre>
+<p>Comparing values will return “True” or “False”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span>==<span class="dv">2</span> ## does equal 
+<span class="dv">2</span>!=<span class="dv">2</span> ## does not equal</code></pre></div>
+<blockquote>
+<h4 id="note-r-is-case-sensitive-and-unforgiving">Note: R is case-sensitive and unforgiving!</h4>
+</blockquote>
+</div>
+<div id="getting-started" class="section level2">
+<h2>Getting Started</h2>
+<p>First, lets do some fun stuff! To get started, install the <em>package</em> “ggplot2”. Packages are toolboxes that include functions, data and code for specific tasks. Note, remove the “#” from before install.packages() to load for the first time. The “#” comments out any code so it will not be run.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;ggplot2&quot;)</span>
+<span class="kw">library</span>(ggplot2)</code></pre></div>
+<blockquote>
+<h4 id="note-if-you-have-installed-an-r-package-once-on-your-computer-you-will-not-need-to-install-it-again.-you-will-need-to-load-the-library-at-the-begining-of-each-new-session-using-the-library-function">Note: if you have installed an R package once on your computer, you will not need to install it again. You will need to <em>load</em> the library at the begining of each new session using the library() function</h4>
+</blockquote>
+</div>
+<div id="getting-data-into-r" class="section level2">
+<h2>Getting Data Into R</h2>
+<p>Now make sure to place your “StripeRust.csv” file in the working directory that we set, then load the data in using the “read.csv” <em>function</em>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RustData &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;StripeRust.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>) 
+  <span class="co">#Header = TRUE lets R know that we have headings in the first row of our data set. </span>
+
+<span class="kw">head</span>(RustData) ## check the first few rows of the dataset</code></pre></div>
+<pre><code>##     Year DAI Severity
+## 1 Year 1  10        0
+## 2 Year 1  20        0
+## 3 Year 1  30        0
+## 4 Year 1  40        3
+## 5 Year 1  50       20
+## 6 Year 1  60       50</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(RustData) ## check the column headers</code></pre></div>
+<pre><code>## [1] &quot;Year&quot;     &quot;DAI&quot;      &quot;Severity&quot;</code></pre>
+<blockquote>
+<h4 id="note-this-data-is-disease-severity-ratings-taken-in-a-wheat-stripe-rust-nursury-over-the-course-of-two-seasons.-dai-days-after-inoculation.">Note: this data is disease severity ratings taken in a wheat stripe rust nursury over the course of two seasons. “DAI” = days after inoculation.</h4>
+</blockquote>
+<p>We can plot this data using ggplot2. Tell the graphing function to use the data “RustData” and then add a layer to the plot with the geom_point() function with severity on the y axis and time on the x axis. Color the points by the year that data was collected.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity, <span class="dt">color =</span> Year))</code></pre></div>
+<p><img src="IntrotoR_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<blockquote>
+<h4 id="note-it-looks-like-disease-took-longer-to-develop-in-year-2-and-was-less-severe-by-day-100.">Note: It looks like disease took longer to develop in year 2, and was less severe by day 100.</h4>
+</blockquote>
+<p>If we switch from the function “geom_point” to “geom_line” we can plot lines and not points.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity, <span class="dt">color =</span> Year))</code></pre></div>
+<p><img src="IntrotoR_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>We can look at the graphs side-by-side using the facet_wrap() function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity)) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~Year) </code></pre></div>
+<p><img src="IntrotoR_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<blockquote>
+<h4 id="note-be-sure-to-include-a-at-the-end-of-each-line-until-you-want-to-close-the-command.">Note: be sure to include a “+” at the end of each line, until you want to close the command.</h4>
+</blockquote>
+<p>Finally, lets add a title!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> RustData) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> DAI, <span class="dt">y =</span> Severity, <span class="dt">color =</span> Year)) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~Year) +
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Stripe Rust Severity Over Time&quot;</span>)</code></pre></div>
+<p><img src="IntrotoR_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="vectors" class="section level2">
+<h2>Vectors</h2>
+<blockquote>
+<h4 id="vectors-are-a-way-to-set-a-series-of-data-elements-as-an-object.">Vectors are a way to set a series of data elements as an object.</h4>
+</blockquote>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v1 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>) <span class="co">#numbers</span>
+v2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;hello&quot;</span>, <span class="st">&quot;world&quot;</span>) <span class="co">#characters </span>
+v3 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;TRUE&quot;</span>, <span class="st">&quot;FALSE&quot;</span>, <span class="st">&quot;TRUE&quot;</span>) <span class="co">#logical values (also could be - &quot;T&quot;, &quot;F&quot;, &quot;T&quot;)</span></code></pre></div>
+<p>Lets make a vector with hypothetical ratings of “R expertise” on a scale of 1-10.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">WithR &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">8.5</span>, <span class="fl">6.5</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">6</span>)
+WithR</code></pre></div>
+<pre><code>##  [1]  8.5  6.5  4.0  1.0  3.0 10.0  5.0  5.0  5.0  1.0  1.0  6.0  6.0</code></pre>
+<p>We can use the following functions to look at some summary statistics.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(WithR)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   3.000   5.000   4.769   6.000  10.000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(WithR)</code></pre></div>
+<pre><code>## [1] 4.769231</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(WithR)</code></pre></div>
+<pre><code>## [1] 2.795945</code></pre>
+<p>And graph a histogram of this distribution!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(WithR, <span class="dt">xlab =</span> <span class="st">&quot;Self-Reported R Proficiency&quot;</span>)</code></pre></div>
+<p><img src="IntrotoR_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<blockquote>
+<h3 id="notice-that-i-choose-to-name-my-new-object-withr.">Notice that I choose to name my new object “WithR”.</h3>
+<h3 id="it-is-important-to-note-that">It is important to note that:</h3>
+<ul>
+<li>R objects are case sentitive so “WithR” is different than “Withr” or “withr”</li>
+<li>Naming of objects is personal preference but the more intuitive, the better</li>
+<li>You cannot start with a number, but can end with one (WithR2)</li>
+<li>Object names can only contain letters, number, “_“, and”.&quot; (WithR_2 or WithR.2)</li>
+</ul>
+</blockquote>
+<p>When reading the assignment statement below we read it as “ClassSize gets 13”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ClassSize &lt;-<span class="st"> </span><span class="dv">13</span> <span class="co"># Assingment</span>
+ClassSize</code></pre></div>
+<pre><code>## [1] 13</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ClassSize &lt;-<span class="st"> </span><span class="kw">length</span>(WithR) ## legnth() will also give us the size of WithR
+ClassSize</code></pre></div>
+<pre><code>## [1] 13</code></pre>
+<p>Lets make a vector of names.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Jim&quot;</span>, <span class="st">&quot;Carole&quot;</span>, <span class="st">&quot;Joe&quot;</span>, <span class="st">&quot;Michelle&quot;</span>, <span class="st">&quot;Jen&quot;</span>, <span class="st">&quot;Pete&quot;</span>, <span class="st">&quot;Paul&quot;</span>, <span class="st">&quot;Tim&quot;</span>, 
+           <span class="st">&quot;Jess&quot;</span>, <span class="st">&quot;Mark&quot;</span>, <span class="st">&quot;Jill&quot;</span>, <span class="st">&quot;Cam&quot;</span>, <span class="st">&quot;Kate&quot;</span>) ## names are random to preserve anonymity
+Names</code></pre></div>
+<pre><code>##  [1] &quot;Jim&quot;      &quot;Carole&quot;   &quot;Joe&quot;      &quot;Michelle&quot; &quot;Jen&quot;      &quot;Pete&quot;    
+##  [7] &quot;Paul&quot;     &quot;Tim&quot;      &quot;Jess&quot;     &quot;Mark&quot;     &quot;Jill&quot;     &quot;Cam&quot;     
+## [13] &quot;Kate&quot;</code></pre>
+<p>We can bind together two or more vectors into a dataframe using cbind.data.frame() to bind columns. Note that cbind stands for “column bind” and rbind stands for “row bind”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">NamesScores &lt;-<span class="st"> </span><span class="kw">cbind.data.frame</span>(Names, WithR) <span class="co">#column bind</span>
+NamesScores</code></pre></div>
+<pre><code>##       Names WithR
+## 1       Jim   8.5
+## 2    Carole   6.5
+## 3       Joe   4.0
+## 4  Michelle   1.0
+## 5       Jen   3.0
+## 6      Pete  10.0
+## 7      Paul   5.0
+## 8       Tim   5.0
+## 9      Jess   5.0
+## 10     Mark   1.0
+## 11     Jill   1.0
+## 12      Cam   6.0
+## 13     Kate   6.0</code></pre>
+<p>Lets bind vertically!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">NamesScoresR &lt;-<span class="st"> </span><span class="kw">rbind</span>(Names, WithR) <span class="co"># row bind</span>
+NamesScoresR &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(NamesScoresR) <span class="co"># make a dataframe</span>
+NamesScoresR</code></pre></div>
+<pre><code>##        V1     V2  V3       V4  V5   V6   V7  V8   V9  V10  V11 V12  V13
+## Names Jim Carole Joe Michelle Jen Pete Paul Tim Jess Mark Jill Cam Kate
+## WithR 8.5    6.5   4        1   3   10    5   5    5    1    1   6    6</code></pre>
+<p>If we want to add the age and gender of the students, we can add a vector of names as another column to the data set</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Age &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">22</span>, <span class="dv">31</span>, <span class="dv">25</span>, <span class="dv">21</span>, <span class="dv">22</span>, <span class="dv">35</span>, <span class="dv">42</span>, <span class="dv">27</span>, <span class="dv">26</span>, <span class="dv">33</span>, <span class="dv">26</span>, <span class="dv">28</span>, <span class="dv">22</span>) <span class="co">#make a vector of ages</span>
+Gender &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>)
+NamesScores &lt;-<span class="st"> </span><span class="kw">cbind</span>(NamesScores, Age, Gender) <span class="co">#column bind</span>
+NamesScores</code></pre></div>
+<pre><code>##       Names WithR Age Gender
+## 1       Jim   8.5  22   Male
+## 2    Carole   6.5  31 Female
+## 3       Joe   4.0  25   Male
+## 4  Michelle   1.0  21 Female
+## 5       Jen   3.0  22 Female
+## 6      Pete  10.0  35   Male
+## 7      Paul   5.0  42   Male
+## 8       Tim   5.0  27   Male
+## 9      Jess   5.0  26 Female
+## 10     Mark   1.0  33   Male
+## 11     Jill   1.0  26 Female
+## 12      Cam   6.0  28   Male
+## 13     Kate   6.0  22 Female</code></pre>
+<p>Lets save this new dataframe as a csv in our working directory. Check to see if you have the file in your folder!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.csv</span>(NamesScores, <span class="st">&quot;NamesScores.csv&quot;</span>)</code></pre></div>
+<p>Alternatively, we could have made our data frame like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">NamesScores3 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+                    <span class="dt">Names =</span><span class="kw">c</span>(<span class="st">&quot;Jim&quot;</span>, <span class="st">&quot;Carole&quot;</span>, <span class="st">&quot;Joe&quot;</span>, <span class="st">&quot;Michelle&quot;</span>, <span class="st">&quot;Jen&quot;</span>, <span class="st">&quot;Pete&quot;</span>, <span class="st">&quot;Paul&quot;</span>, <span class="st">&quot;Tim&quot;</span>, 
+                            <span class="st">&quot;Jess&quot;</span>, <span class="st">&quot;Mark&quot;</span>, <span class="st">&quot;Jill&quot;</span>, <span class="st">&quot;Cam&quot;</span>, <span class="st">&quot;Kate&quot;</span>) ,
+                    <span class="dt">Experience =</span> <span class="kw">c</span>(<span class="fl">8.5</span>, <span class="fl">6.5</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">6</span>) , 
+                    <span class="dt">Age =</span> <span class="kw">c</span>(<span class="dv">22</span>, <span class="dv">31</span>, <span class="dv">25</span>, <span class="dv">21</span>, <span class="dv">22</span>, <span class="dv">35</span>, <span class="dv">42</span>, <span class="dv">27</span>, <span class="dv">26</span>, <span class="dv">33</span>, <span class="dv">26</span>, <span class="dv">28</span>, <span class="dv">22</span>) , 
+                    <span class="dt">Gender =</span> <span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))
+NamesScores3            </code></pre></div>
+<pre><code>##       Names Experience Age Gender
+## 1       Jim        8.5  22   Male
+## 2    Carole        6.5  31 Female
+## 3       Joe        4.0  25   Male
+## 4  Michelle        1.0  21 Female
+## 5       Jen        3.0  22 Female
+## 6      Pete       10.0  35   Male
+## 7      Paul        5.0  42   Male
+## 8       Tim        5.0  27   Male
+## 9      Jess        5.0  26 Female
+## 10     Mark        1.0  33   Male
+## 11     Jill        1.0  26 Female
+## 12      Cam        6.0  28   Male
+## 13     Kate        6.0  22 Female</code></pre>
+<div id="subsetting" class="section level3">
+<h3>Subsetting</h3>
+<p>What if we only care about the first four members of the class? We can use <em>subsetting</em> to select the values in our data frame that we are interested in.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## syntax: dataframe[rows, columns]
+FirstFour &lt;-<span class="st"> </span>NamesScores[<span class="dv">1</span>:<span class="dv">4</span>,] ## this means select row 1 through 4 in data frame NamesScores
+FirstFour</code></pre></div>
+<pre><code>##      Names WithR Age Gender
+## 1      Jim   8.5  22   Male
+## 2   Carole   6.5  31 Female
+## 3      Joe   4.0  25   Male
+## 4 Michelle   1.0  21 Female</code></pre>
+<p>What if we just wanted the second column?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SecondColumn &lt;-<span class="st"> </span>NamesScores[,<span class="dv">2</span>] ## select column 2
+SecondColumn </code></pre></div>
+<pre><code>##  [1]  8.5  6.5  4.0  1.0  3.0 10.0  5.0  5.0  5.0  1.0  1.0  6.0  6.0</code></pre>
+<blockquote>
+<h2 id="now-you-try">Now you try!</h2>
+<ul>
+<li>Make an object called “obj1” with a vector of the numbers 1-13</li>
+<li>bind that vector to our “NamesScores” object, creating a new data frame</li>
+<li>Name the new three column data frame “NamesScores2”</li>
+</ul>
+</blockquote>
+<p>It might look something like this:</p>
+<pre><code>##       Names WithR Age Gender obj1
+## 1       Jim   8.5  22   Male    1
+## 2    Carole   6.5  31 Female    2
+## 3       Joe   4.0  25   Male    3
+## 4  Michelle   1.0  21 Female    4
+## 5       Jen   3.0  22 Female    5
+## 6      Pete  10.0  35   Male    6
+## 7      Paul   5.0  42   Male    7
+## 8       Tim   5.0  27   Male    8
+## 9      Jess   5.0  26 Female    9
+## 10     Mark   1.0  33   Male   10
+## 11     Jill   1.0  26 Female   11
+## 12      Cam   6.0  28   Male   12
+## 13     Kate   6.0  22 Female   13</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

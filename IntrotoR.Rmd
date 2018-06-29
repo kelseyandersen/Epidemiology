@@ -2,13 +2,13 @@
 title: "Introduction to R"
 ---
 
-##Set working directory
+### Set working directory
 
 First, set your working directory. This is a folder in which you will save this script, along with any files that will be used as part of your analyses. 
 
 
 
-##R is essentially a fancy calculator:
+### R is essentially a fancy calculator:
 ```{r calculator}
 1+1
 3*2
