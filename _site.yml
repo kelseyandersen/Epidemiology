@@ -3,9 +3,9 @@ name: "my-website"
 navbar:
   title: "Kelsey Andersen"
   left:
-    - text: "Home"
-      href: index.html
     - text: "About"
+      href: index.html
+    - text: "Projects"
       href: about.html
   right:
     - icon: fa-envelope fa-lg
@@ -18,8 +18,9 @@ navbar:
       href: https://www.linkedin.com/in/kelseyandersen/
 output:
   html_document:
-    theme: paper
+    theme: flatly
+    highlight: monochrome
     css: 'styles.css'
-    toc: true  
-    toc_float: true  
+    #toc: true  
+    #toc_float: true  
 output_dir: "."
