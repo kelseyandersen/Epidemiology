@@ -5,7 +5,7 @@ navbar:
   left:
     - text: "About"
       href: index.html
-    - text: "Projects"
+    - text: "CV"
       href: about.html
   right:
     - icon: fa-envelope fa-lg
