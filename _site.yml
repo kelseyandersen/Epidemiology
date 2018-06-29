@@ -1,13 +1,18 @@
 
-name: "my-website"
+name: "Epidemiology and Data Science"
+output_dir: "."
 navbar:
-  title: "Kelsey Andersen"
+  title: "Epidem & Data Sci"
   left:
-    - text: "Home"
-      href: index.html
     - text: "About"
-      href: about.html
+      href: index.html
+    - text: "Introduction to R"
+      href: IntrotoR.html
 output:
   html_document:
     theme: paper
+    highlight: monochrome
     css: 'styles.css'
+    toc: true  
+    toc_float: true  
+
