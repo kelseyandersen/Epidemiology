@@ -1,6 +1,9 @@
 ---
 title: "Dplyr and Writing Scripts"
+author: "Yanru Xing"
 ---
+
+Adapted from [Data Science for R](r4ds.had.co.nz) by Hadley Wichkam and Garrett Grolemund 
 
 ## tidyverse
 ### A collection of some R packages
