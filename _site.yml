@@ -5,12 +5,14 @@ navbar:
   left:
   - text: Syllabus
     href: index.html
-  - text: Data Visualization and Workflow
-    href: IntrotoR.html
-  - text: Dplyr and Scripts
-    href: dplyr2.html
-  - text: Data Import and Tidy
-    href: tidyr.html
+  - text: R for Data Science
+    menu:
+      - text: Data Visualization
+        href: IntrotoR.html
+      - text: Dplyr and Scripts
+        href: dplyr2.html
+      - text: Data Import and Tidy
+        href: tidyr.html
 output:
   html_document:
     theme: paper
