@@ -4,6 +4,7 @@ author: "Ravin Poudel"
 ---
 Adapted from [Data Science for R](r4ds.had.co.nz) by Hadley Wichkam and Garrett Grolemund 
 
+Download slides [here](Powerpoints/Exploratory Data Analysis.pdf)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
