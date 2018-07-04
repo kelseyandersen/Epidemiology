@@ -8,7 +8,7 @@ navbar:
       href: index.html
     - text: "Data Visualization and Workflow"
       href: IntrotoR.html
-    - text: "Data Import & Tidy"
+    - text: "Data Import and Tidy"
     - href: tidyr.html
 output:
   html_document:
