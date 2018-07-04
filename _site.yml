@@ -7,15 +7,15 @@ navbar:
     href: index.html
   - text: R for Data Science
     menu:
-      - text: Data Visualization
-        href: IntrotoR.html
-      - text: Dplyr and Scripts
-        href: dplyr2.html
-      - text: Data Import and Tidy
-        href: tidyr.html
+    - text: Data Visualization
+      href: IntrotoR.html
+    - text: Dplyr and Scripts
+      href: dplyr2.html
+    - text: Data Import and Tidy
+      href: tidyr.html
 output:
   html_document:
-    theme: sandstone
+    theme: paper
     highlight: monochrome
     css: styles.css
     toc: yes
