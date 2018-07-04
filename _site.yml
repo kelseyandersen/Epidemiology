@@ -15,7 +15,7 @@ navbar:
         href: tidyr.html
 output:
   html_document:
-    theme: paper
+    theme: sandstone
     highlight: monochrome
     css: styles.css
     toc: yes
