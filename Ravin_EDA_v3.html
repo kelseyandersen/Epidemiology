@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Ravin Poudel" />
+
+
+<title>Exploratory Data Analysis in R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { font-weight: bold; } /* Keyword */
+code > span.dt { text-decoration: underline; } /* DataType */
+code > span.co { font-style: italic; } /* Comment */
+code > span.al { font-weight: bold; } /* Alert */
+code > span.er { font-weight: bold; } /* Error */
+code > span.wa { font-style: italic; } /* Warning */
+code > span.cf { font-weight: bold; } /* ControlFlow */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.do { font-style: italic; } /* Documentation */
+code > span.an { font-style: italic; } /* Annotation */
+code > span.cv { font-style: italic; } /* CommentVar */
+code > span.in { font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Epidemiology & Data Science</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Syllabus</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R for Data Science
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DataViz.html">Data Visualization</a>
+    </li>
+    <li>
+      <a href="dplyr2.html">Dplyr and Scripts</a>
+    </li>
+    <li>
+      <a href="Ravin_EDA_v3.html">Exploratory Data Analysis in R</a>
+    </li>
+    <li>
+      <a href="tidyr.html">Data Import and Tidy</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exploratory Data Analysis in R</h1>
+<h4 class="author"><em>Ravin Poudel</em></h4>
+
+</div>
+
+
+<p>Adapted from <a href="r4ds.had.co.nz">Data Science for R</a> by Hadley Wichkam and Garrett Grolemund</p>
+<p>In this section, we will be using a build-in dataset called “diamonds” to explore the tools and techniques that are useful for exploratory data analysis. we will be mostly using tidyverse packages.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load the library</span>
+<span class="kw">library</span>(tidyverse)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># call for data  </span>
+<span class="kw">data</span>(<span class="st">&quot;diamonds&quot;</span>)
+
+<span class="co"># display data structure </span>
+<span class="kw">str</span>(diamonds)</code></pre></div>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    53940 obs. of  10 variables:
+##  $ carat  : num  0.23 0.21 0.23 0.29 0.31 0.24 0.24 0.26 0.22 0.23 ...
+##  $ cut    : Ord.factor w/ 5 levels &quot;Fair&quot;&lt;&quot;Good&quot;&lt;..: 5 4 2 4 2 3 3 3 1 3 ...
+##  $ color  : Ord.factor w/ 7 levels &quot;D&quot;&lt;&quot;E&quot;&lt;&quot;F&quot;&lt;&quot;G&quot;&lt;..: 2 2 2 6 7 7 6 5 2 5 ...
+##  $ clarity: Ord.factor w/ 8 levels &quot;I1&quot;&lt;&quot;SI2&quot;&lt;&quot;SI1&quot;&lt;..: 2 3 5 4 2 6 7 3 4 5 ...
+##  $ depth  : num  61.5 59.8 56.9 62.4 63.3 62.8 62.3 61.9 65.1 59.4 ...
+##  $ table  : num  55 61 65 58 58 57 57 55 61 61 ...
+##  $ price  : int  326 326 327 334 335 336 336 337 337 338 ...
+##  $ x      : num  3.95 3.89 4.05 4.2 4.34 3.94 3.95 4.07 3.87 4 ...
+##  $ y      : num  3.98 3.84 4.07 4.23 4.35 3.96 3.98 4.11 3.78 4.05 ...
+##  $ z      : num  2.43 2.31 2.31 2.63 2.75 2.48 2.47 2.53 2.49 2.39 ...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># mapping the types of diamond cut, and their number</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> cut))</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Here the bar represents different categories of dimaond cuts. The height of the bars displays how many observations occurred with each x value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># if you want a count table </span>
+diamonds %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>(cut)</code></pre></div>
+<pre><code>## # A tibble: 5 x 2
+##   cut           n
+##   &lt;ord&gt;     &lt;int&gt;
+## 1 Fair       1610
+## 2 Good       4906
+## 3 Very Good 12082
+## 4 Premium   13791
+## 5 Ideal     21551</code></pre>
+<p>Distribution plots are one of common visualization tools use for exploratory data analysis. Selection of exploratory tools is in part based on data types. Histograms are used for continuous variables, whereas barplots and box plots are common tools for categorical data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># call for data structure and check the data type for diamond carat</span>
+
+<span class="kw">str</span>(diamonds)</code></pre></div>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    53940 obs. of  10 variables:
+##  $ carat  : num  0.23 0.21 0.23 0.29 0.31 0.24 0.24 0.26 0.22 0.23 ...
+##  $ cut    : Ord.factor w/ 5 levels &quot;Fair&quot;&lt;&quot;Good&quot;&lt;..: 5 4 2 4 2 3 3 3 1 3 ...
+##  $ color  : Ord.factor w/ 7 levels &quot;D&quot;&lt;&quot;E&quot;&lt;&quot;F&quot;&lt;&quot;G&quot;&lt;..: 2 2 2 6 7 7 6 5 2 5 ...
+##  $ clarity: Ord.factor w/ 8 levels &quot;I1&quot;&lt;&quot;SI2&quot;&lt;&quot;SI1&quot;&lt;..: 2 3 5 4 2 6 7 3 4 5 ...
+##  $ depth  : num  61.5 59.8 56.9 62.4 63.3 62.8 62.3 61.9 65.1 59.4 ...
+##  $ table  : num  55 61 65 58 58 57 57 55 61 61 ...
+##  $ price  : int  326 326 327 334 335 336 336 337 337 338 ...
+##  $ x      : num  3.95 3.89 4.05 4.2 4.34 3.94 3.95 4.07 3.87 4 ...
+##  $ y      : num  3.98 3.84 4.07 4.23 4.35 3.96 3.98 4.11 3.78 4.05 ...
+##  $ z      : num  2.43 2.31 2.31 2.63 2.75 2.48 2.47 2.53 2.49 2.39 ...</code></pre>
+<p>Carat is a numerical information about the diamond weight. Here carat is a continuous variable and it can take infinite set of values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># maximum value for diamond carat</span>
+<span class="kw">max</span>(diamonds$carat)</code></pre></div>
+<pre><code>## [1] 5.01</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># minimum value for diamond carat</span>
+<span class="kw">min</span>(diamonds$carat)</code></pre></div>
+<pre><code>## [1] 0.2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># distribution of carat values</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds) +
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat), <span class="dt">binwidth =</span> <span class="fl">0.5</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Note: Binwidth determines size of the bin. If you increase the size for the bin, you will observe less number of bins in histogram.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check the difference when the bin size is one</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds) +
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat), <span class="dt">binwidth =</span> <span class="dv">1</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>We can also use data subsetting skills to select the specific information.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># distribution of diamond with carat less than 3.</span>
+smaller &lt;-<span class="st"> </span>diamonds %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(carat &lt;<span class="st"> </span><span class="dv">3</span>)
+
+<span class="co"># check the table</span>
+<span class="kw">head</span>(smaller)</code></pre></div>
+<pre><code>## # A tibble: 6 x 10
+##   carat cut       color clarity depth table price     x     y     z
+##   &lt;dbl&gt; &lt;ord&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.230 Ideal     E     SI2      61.5   55.   326  3.95  3.98  2.43
+## 2 0.210 Premium   E     SI1      59.8   61.   326  3.89  3.84  2.31
+## 3 0.230 Good      E     VS1      56.9   65.   327  4.05  4.07  2.31
+## 4 0.290 Premium   I     VS2      62.4   58.   334  4.20  4.23  2.63
+## 5 0.310 Good      J     SI2      63.3   58.   335  4.34  4.35  2.75
+## 6 0.240 Very Good J     VVS2     62.8   57.   336  3.94  3.96  2.48</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check the x-axis and compare with the previous histogram.</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> smaller, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat)) +
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">0.5</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># adding color to the histogram</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> smaller, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat, <span class="dt">fill =</span> <span class="st">&quot;red&quot;</span>)) +
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">0.5</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># adding informative color to the histogram</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> smaller, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat, <span class="dt">fill =</span> cut)) +
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">0.5</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Instead of histogram if you want a line then you can use geom_freqpoly() function. Instead of bars, lines are used to display the counts.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> smaller, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat, <span class="dt">colour =</span> cut)) +
+<span class="st">  </span><span class="kw">geom_freqpoly</span>(<span class="dt">binwidth =</span> <span class="fl">0.1</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Histogram are good tool to explore continuous variable. However, it is not that intuitive to explore categorical data with histogram. For categorical data we use box plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> cut, <span class="dt">y =</span> price)) +
+<span class="st">  </span><span class="kw">geom_boxplot</span>()</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># if you want to reorder based on the median value</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(cut, price, <span class="dt">FUN =</span> median), <span class="dt">y =</span> price)) +
+<span class="st">  </span><span class="kw">geom_boxplot</span>()</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>If you have long variable names, geom_boxplot() will work better if you flip it 90°. You can do that with coord_flip() function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(cut, price, <span class="dt">FUN =</span> median), <span class="dt">y =</span> price)) +
+<span class="st">  </span><span class="kw">geom_boxplot</span>() +
+<span class="st">  </span><span class="kw">coord_flip</span>()</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<div id="two-categorical-variables" class="section level1">
+<h1>Two categorical variables</h1>
+<p>To visualize covariation between categorical variables, you will need to count the number of observations for each combination.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># display data as table</span>
+diamonds %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>(color, cut)</code></pre></div>
+<pre><code>## # A tibble: 35 x 3
+##    color cut           n
+##    &lt;ord&gt; &lt;ord&gt;     &lt;int&gt;
+##  1 D     Fair        163
+##  2 D     Good        662
+##  3 D     Very Good  1513
+##  4 D     Premium    1603
+##  5 D     Ideal      2834
+##  6 E     Fair        224
+##  7 E     Good        933
+##  8 E     Very Good  2400
+##  9 E     Premium    2337
+## 10 E     Ideal      3903
+## # ... with 25 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># then plot with geom_tile() and the fill aesthetic:</span>
+diamonds %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>(color, cut) %&gt;%<span class="st">  </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> color, <span class="dt">y =</span> cut)) +
+<span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">fill =</span> n))</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="exploring-two-continuous-variables." class="section level1">
+<h1>Exploring two continuous variables.</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat, <span class="dt">y =</span> price))</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat, <span class="dt">y =</span> price), <span class="dt">alpha =</span> <span class="dv">1</span> /<span class="st"> </span><span class="dv">10</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="question-can-you-combine-categorial-information-with-continuous-variable" class="section level1">
+<h1>Question: Can you combine categorial information with continuous variable?</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat, <span class="dt">y =</span> price, <span class="dt">colour =</span>cut), <span class="dt">alpha =</span> <span class="dv">1</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>So far we have looked at the distribution using histograms and box plots. For two continuous variables, we can explore covariations between two variables and study their relationship.</p>
+<p>Let’s look at one example with diamond dataset. It will be interesting to see if there is any relationship between the diamond price and the carat. Here we use <code>lm</code> function from base R to build a linear model, where diamond price is represented as response variable and carat as predictor.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(price) ~<span class="st"> </span><span class="kw">log</span>(carat), <span class="dt">data =</span> diamonds)
+
+<span class="co"># summary table for linear model</span>
+<span class="kw">summary</span>(mod)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = log(price) ~ log(carat), data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.50833 -0.16951 -0.00591  0.16637  1.33793 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 8.448661   0.001365  6190.9   &lt;2e-16 ***
+## log(carat)  1.675817   0.001934   866.6   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2627 on 53938 degrees of freedom
+## Multiple R-squared:  0.933,  Adjusted R-squared:  0.933 
+## F-statistic: 7.51e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)) <span class="co"># allows to visualize four plots in a single page</span>
+
+<span class="kw">plot</span>(mod)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+</div>
+<div id="challenge" class="section level1">
+<h1>Challenge</h1>
+<p>Outliers are observations that are unusual; data points that don’t seem to fit the pattern. Use diamonds data set, and visualize such unusual data point. Hint: binwidth</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> diamonds, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> carat)) +
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">0.01</span>)</code></pre></div>
+<p><img src="Ravin_EDA_v3_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

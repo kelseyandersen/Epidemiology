@@ -1,0 +1,204 @@
+---
+title: "Exploratory Data Analysis in R"
+author: "Ravin Poudel"
+---
+Adapted from [Data Science for R](r4ds.had.co.nz) by Hadley Wichkam and Garrett Grolemund 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+In this section, we will be using a build-in dataset called "diamonds" to explore the tools and techniques that are useful for exploratory data analysis. we will be mostly using tidyverse packages. 
+
+```{r, echo= TRUE, include=TRUE}
+# load the library
+library(tidyverse)
+```
+
+```{r, echo= TRUE}
+# call for data  
+data("diamonds")
+
+# display data structure 
+str(diamonds)
+```
+
+```{r}
+# mapping the types of diamond cut, and their number
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+```
+
+Here the bar represents different categories of dimaond cuts. The height of the bars displays how many observations occurred with each x value. 
+
+
+```{r}
+# if you want a count table 
+diamonds %>% 
+  count(cut)
+```
+
+
+Distribution plots are one of common visualization tools use for exploratory data analysis. Selection of exploratory tools is in part based on data types. Histograms are used for continuous variables, whereas barplots and box plots are common tools for categorical data. 
+
+
+```{r}
+# call for data structure and check the data type for diamond carat
+
+str(diamonds)
+```
+
+Carat is a numerical information about the diamond weight. Here carat is a continuous variable and it can take infinite set of values. 
+
+```{r}
+# maximum value for diamond carat
+max(diamonds$carat)
+
+
+# minimum value for diamond carat
+min(diamonds$carat)
+
+```
+
+```{r}
+# distribution of carat values
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = carat), binwidth = 0.5)
+
+```
+
+Note: Binwidth determines size of the bin. If you increase the size for the bin, you will observe less number of bins in histogram.
+
+```{r}
+# check the difference when the bin size is one
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = carat), binwidth = 1)
+```
+
+We can also use data subsetting skills to select the specific information. 
+
+```{r}
+# distribution of diamond with carat less than 3.
+smaller <- diamonds %>% 
+  filter(carat < 3)
+
+# check the table
+head(smaller)
+
+```
+
+```{r}
+# check the x-axis and compare with the previous histogram.
+ggplot(data = smaller, mapping = aes(x = carat)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+
+```{r}
+# adding color to the histogram
+ggplot(data = smaller, mapping = aes(x = carat, fill = "red")) +
+  geom_histogram(binwidth = 0.5)
+```
+
+```{r}
+# adding informative color to the histogram
+ggplot(data = smaller, mapping = aes(x = carat, fill = cut)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+
+Instead of histogram if you want a line then you can use geom_freqpoly() function. Instead of bars, lines are used to display the counts.
+
+```{r}
+ggplot(data = smaller, mapping = aes(x = carat, colour = cut)) +
+  geom_freqpoly(binwidth = 0.1)
+```
+
+
+Histogram are good tool to explore continuous variable. However, it is not that intuitive to explore categorical data with histogram. For categorical data we use box plot.
+```{r}
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
+  geom_boxplot()
+```
+
+```{r}
+# if you want to reorder based on the median value
+ggplot(data = diamonds, mapping = aes(x = reorder(cut, price, FUN = median), y = price)) +
+  geom_boxplot()
+
+```
+
+If you have long variable names, geom_boxplot() will work better if you flip it 90°. You can do that with coord_flip() function.
+
+```{r}
+ggplot(data = diamonds, mapping = aes(x = reorder(cut, price, FUN = median), y = price)) +
+  geom_boxplot() +
+  coord_flip()
+```
+
+# Two categorical variables
+To visualize covariation between categorical variables, you will need to count the number of observations for each combination. 
+
+```{r}
+# display data as table
+diamonds %>% 
+  count(color, cut)
+```
+
+```{r}
+# then plot with geom_tile() and the fill aesthetic:
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = color, y = cut)) +
+  geom_tile(mapping = aes(fill = n))
+```
+
+# Exploring two continuous variables. 
+
+```{r}
+ggplot(data = diamonds) +
+  geom_point(mapping = aes(x = carat, y = price))
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_point(mapping = aes(x = carat, y = price), alpha = 1 / 10)
+```
+
+# Question: Can you combine categorial information with continuous variable?
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_point(mapping = aes(x = carat, y = price, colour =cut), alpha = 1)
+
+```
+
+
+So far we have looked at the distribution using histograms and box plots. For two continuous variables, we can explore covariations between two variables and study their relationship.
+
+Let's look at one example with diamond dataset. It will be interesting to see if there is any relationship between the diamond price and the carat. Here we use `lm` function from base R to build a linear model, where diamond price is represented as response variable and carat as predictor. 
+
+```{r}
+mod <- lm(log(price) ~ log(carat), data = diamonds)
+
+# summary table for linear model
+summary(mod)
+
+par(mfrow=c(2,2)) # allows to visualize four plots in a single page
+
+plot(mod)
+
+```
+
+# Challenge
+Outliers are observations that are unusual; data points that don’t seem to fit the pattern. Use diamonds data set, and visualize such unusual data point. Hint: binwidth
+
+```{r}
+ggplot(data = diamonds, mapping = aes(x = carat)) +
+  geom_histogram(binwidth = 0.01)
+```
+
+
+
+
+
