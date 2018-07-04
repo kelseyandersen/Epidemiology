@@ -1,20 +1,21 @@
-
-name: "Epidemiology and Data Science"
-output_dir: "."
+name: Epidemiology and Data Science
+output_dir: '.'
 navbar:
-  title: "Epidemiology & Data Science"
+  title: Epidemiology & Data Science
   left:
-    - text: "Syllabus"
-      href: index.html
-    - text: "Data Visualization and Workflow"
-      href: IntrotoR.html
-    - text: "Data Import and Tidy"
-    - href: tidyr.html
+  - text: Syllabus
+    href: index.html
+  - text: Data Visualization and Workflow
+    href: IntrotoR.html
+  - text: Data Import and Tidy
+    href: tidyr.html
 output:
   html_document:
     theme: paper
     highlight: monochrome
-    css: 'styles.css'
-    toc: true  
-    toc_float: true  
+    css: styles.css
+    toc: yes
+    toc_float: yes
+    lib_dir: site_libs
+    self_contained: no
 
