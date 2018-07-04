@@ -328,12 +328,11 @@ div.tocify {
 </div>
 
 
-<p>Adapted from <a href="r4ds.had.co.nz">Data Science for R</a> by Hadley Wichkam and Garrett Grolemund</p>
-<div id="tidyverse" class="section level2">
-<h2>tidyverse</h2>
-<div id="a-collection-of-some-r-packages" class="section level3">
-<h3>A collection of some R packages</h3>
-</div>
+<p><em>Adapted from <a href="r4ds.had.co.nz">Data Science for R</a> by Hadley Wichkam and Garrett Grolemund</em></p>
+<p>Download slides <a href="Powerpoints/dplyr.pdf">here</a></p>
+<div id="tidyverse-a-collection-of-r-packages" class="section level2">
+<h2>tidyverse = A collection of R packages</h2>
+<p> </p>
 <div id="package-dplyr" class="section level3">
 <h3>Package ‘dplyr’</h3>
 <div id="a-grammar-of-data-manipulation" class="section level4">
@@ -344,8 +343,16 @@ div.tocify {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;nycflights13&quot;)</span>
 <span class="co">#install.packages(&quot;tidyverse&quot;)</span>
 
-<span class="kw">library</span>(tidyverse)
-<span class="kw">library</span>(nycflights13)
+<span class="kw">library</span>(tidyverse)</code></pre></div>
+<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
+## ✔ tidyr   0.8.0     ✔ stringr 1.2.0
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(nycflights13)
 
 nycflights13::flights <span class="co">#This data frame contains all 336,776 flights that departed from New York City in 2013</span></code></pre></div>
 <pre><code>## # A tibble: 336,776 x 19

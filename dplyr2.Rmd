@@ -3,13 +3,19 @@ title: "Dplyr and Writing Scripts"
 author: "Yanru Xing"
 ---
 
-Adapted from [Data Science for R](r4ds.had.co.nz) by Hadley Wichkam and Garrett Grolemund 
+*Adapted from [Data Science for R](r4ds.had.co.nz) by Hadley Wichkam and Garrett Grolemund*
 
-## tidyverse
-### A collection of some R packages
-### Package ‘dplyr’
-#### A Grammar of Data Manipulation
-#### Description A fast, consistent tool for working with data frame like objects, both in memory and out of memory.
+Download slides [here](Powerpoints/dplyr.pdf)
+
+## tidyverse = A collection of R packages  
+\  
+
+
+### Package ‘dplyr’  
+#### A Grammar of Data Manipulation  
+#### Description A fast, consistent tool for working with data frame like objects, both in memory and out of memory.  
+
+
 
 ```{r dplyr, echo=T}
 #install.packages("nycflights13")
