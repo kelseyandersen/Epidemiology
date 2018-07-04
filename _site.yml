@@ -2,12 +2,14 @@
 name: "Epidemiology and Data Science"
 output_dir: "."
 navbar:
-  title: "Epidem & Data Sci"
+  title: "Epidemiology & Data Science"
   left:
-    - text: "About"
+    - text: "Syllabus"
       href: index.html
-    - text: "Introduction to R"
+    - text: "Data Visualization and Workflow"
       href: IntrotoR.html
+    - text: "Data Import & Tidy"
+    - href: tidyr.html
 output:
   html_document:
     theme: paper

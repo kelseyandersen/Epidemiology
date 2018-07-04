@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Adapted from Data Science for R by Hadley Wichkam and Garrett Grolemund" />
+
+
+<title>Data import and Tidy-ing</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { font-weight: bold; } /* Keyword */
+code > span.dt { text-decoration: underline; } /* DataType */
+code > span.co { font-style: italic; } /* Comment */
+code > span.al { font-weight: bold; } /* Alert */
+code > span.er { font-weight: bold; } /* Error */
+code > span.wa { font-style: italic; } /* Warning */
+code > span.cf { font-weight: bold; } /* ControlFlow */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.do { font-style: italic; } /* Documentation */
+code > span.an { font-style: italic; } /* Annotation */
+code > span.cv { font-style: italic; } /* CommentVar */
+code > span.in { font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Epidem & Data Sci</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">About</a>
+</li>
+<li>
+  <a href="IntrotoR.html">Introduction to R</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Data import and Tidy-ing</h1>
+<h4 class="author"><em>Adapted from Data Science for R by Hadley Wichkam and Garrett Grolemund</em></h4>
+
+</div>
+
+
+<p><br />
+</p>
+<div id="getting-data-into-r" class="section level1">
+<h1>Getting data into R!</h1>
+<p><em>Maybe the most important step?</em></p>
+<p> </p>
+<div id="base-r" class="section level2">
+<h2>Base R</h2>
+<ul>
+<li><strong>read.csv()</strong> is the function avaiable from base R, and maybe the one you are most familiar with
+<ul>
+<li>This function reads data directly into a data frame so to use other packages (like dplyr) you will need to convert to a tibble yourself</li>
+<li>You can specify if first columns of data are headers using header = TRUE</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FAO1 &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;FAOSTAT_data.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p> </p>
+</div>
+<div id="readr" class="section level2">
+<h2>readr</h2>
+<ul>
+<li><strong>read_csv()</strong> (from <strong>readr</strong> package) makes data from a .csv file right into a <em>tibble</em>
+<ul>
+<li>up to 10x faster than <strong>read.csv()</strong></li>
+<li>reads in data directly as a tibble</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)</code></pre></div>
+<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
+## ✔ tidyr   0.8.0     ✔ stringr 1.2.0
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FAO1 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;FAOSTAT_data.csv&quot;</span>)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Country = col_character(),
+##   Element = col_character(),
+##   Item = col_character(),
+##   Year = col_integer(),
+##   Unit = col_character(),
+##   Value = col_integer()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FAO1</code></pre></div>
+<pre><code>## # A tibble: 40 x 6
+##    Country  Element        Item     Year Unit  Value
+##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;   &lt;int&gt; &lt;chr&gt; &lt;int&gt;
+##  1 Cambodia Area harvested Bananas  2007 ha    30000
+##  2 Cambodia Area harvested Bananas  2008 ha    32000
+##  3 Cambodia Area harvested Bananas  2009 ha    33000
+##  4 Cambodia Area harvested Bananas  2010 ha    35002
+##  5 Cambodia Area harvested Bananas  2011 ha    32574
+##  6 Cambodia Area harvested Bananas  2012 ha    31844
+##  7 Cambodia Area harvested Bananas  2013 ha    31757
+##  8 Cambodia Area harvested Bananas  2014 ha    31741
+##  9 Cambodia Area harvested Bananas  2015 ha    31786
+## 10 Cambodia Area harvested Bananas  2016 ha    31875
+## # ... with 30 more rows</code></pre>
+<div id="some-tips-for-read_csv" class="section level4">
+<h4>Some tips for <strong>read_csv()</strong></h4>
+<ul>
+<li>Use skip = n to skip n nows if there are rows of metadata above your column headers.</li>
+<li>Use col_names = FALSE if there are no row headings or</li>
+<li>col_names = c(“x”, “y”, “z”) to pass a vector of column names to the data table</li>
+<li>use na = “.” to specify what missing values look like</li>
+</ul>
+<p>Say that after import, you notice that you would like to change one of your variable types, you can do that by specifying the variable type for each column. For example, let’s say we want to change year to character:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FAO2 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;FAOSTAT_data.csv&quot;</span>, <span class="dt">col_types =</span> <span class="kw">cols</span>(
+    <span class="dt">Country =</span> <span class="kw">col_character</span>(),
+    <span class="dt">Element =</span> <span class="kw">col_character</span>(),
+    <span class="dt">Item =</span> <span class="kw">col_character</span>(),
+    <span class="dt">Year =</span> <span class="kw">col_character</span>(), ### changed year to character
+    <span class="dt">Unit =</span> <span class="kw">col_character</span>(),
+    <span class="dt">Value =</span> <span class="kw">col_integer</span>()
+  ))
+FAO2</code></pre></div>
+<pre><code>## # A tibble: 40 x 6
+##    Country  Element        Item    Year  Unit  Value
+##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
+##  1 Cambodia Area harvested Bananas 2007  ha    30000
+##  2 Cambodia Area harvested Bananas 2008  ha    32000
+##  3 Cambodia Area harvested Bananas 2009  ha    33000
+##  4 Cambodia Area harvested Bananas 2010  ha    35002
+##  5 Cambodia Area harvested Bananas 2011  ha    32574
+##  6 Cambodia Area harvested Bananas 2012  ha    31844
+##  7 Cambodia Area harvested Bananas 2013  ha    31757
+##  8 Cambodia Area harvested Bananas 2014  ha    31741
+##  9 Cambodia Area harvested Bananas 2015  ha    31786
+## 10 Cambodia Area harvested Bananas 2016  ha    31875
+## # ... with 30 more rows</code></pre>
+</div>
+<div id="read-directly-from-excel-files-using-the-tidyverse-package-readxl" class="section level3">
+<h3>Read directly from excel files using the tidyverse package <strong>readxl</strong></h3>
+<ul>
+<li>read_excel() detects file path <em>-</em> read_xlsx() reads directly from .xlsx file</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FAOxls &lt;-<span class="st"> </span>readxl::<span class="kw">read_excel</span>(<span class="st">&quot;FAOSTAT_data2.xlsx&quot;</span>)
+FAOxls</code></pre></div>
+<pre><code>## # A tibble: 40 x 6
+##    Country  Element        Item     Year Unit   Value
+##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+##  1 Cambodia Area harvested Bananas 2007. ha    30000.
+##  2 Cambodia Area harvested Bananas 2008. ha    32000.
+##  3 Cambodia Area harvested Bananas 2009. ha    33000.
+##  4 Cambodia Area harvested Bananas 2010. ha    35002.
+##  5 Cambodia Area harvested Bananas 2011. ha    32574.
+##  6 Cambodia Area harvested Bananas 2012. ha    31844.
+##  7 Cambodia Area harvested Bananas 2013. ha    31757.
+##  8 Cambodia Area harvested Bananas 2014. ha    31741.
+##  9 Cambodia Area harvested Bananas 2015. ha    31786.
+## 10 Cambodia Area harvested Bananas 2016. ha    31875.
+## # ... with 30 more rows</code></pre>
+</div>
+<div id="read-in-other-data-types" class="section level3">
+<h3>Read in other data types</h3>
+<ul>
+<li>Read in SPSS, Stata and SAS files using package <strong>haven</strong></li>
+</ul>
+</div>
+<div id="parsing" class="section level3">
+<h3>Parsing</h3>
+<p>????</p>
+<p>            ????</p>
+</div>
+</div>
+</div>
+<div id="tidyr" class="section level1">
+<h1>Tidyr</h1>
+<ul>
+<li>Tidy data has one variable per column</li>
+<li>Each observation has a row</li>
+<li>Each value in it’s own cell!</li>
+</ul>
+<div id="in-the-book-there-are-three-data-table-examples.-which-one-is-tidy" class="section level4">
+<h4>In the book there are three data table examples. Which one is “tidy”?</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table1</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table2</code></pre></div>
+<pre><code>## # A tibble: 12 x 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table3</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country      year rate             
+## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583</code></pre>
+</div>
+<div id="only-table-1" class="section level4">
+<h4>Only table 1!</h4>
+</div>
+<div id="notice-that-each-column-is-a-variable." class="section level4">
+<h4>Notice that each column is a variable.</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table1</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+</div>
+<div id="graph-your-tidy-data" class="section level3">
+<h3>Graph your tidy data</h3>
+<div id="using-the-data-in-table-1-you-can-easily-graph" class="section level4">
+<h4>Using the data in Table 1, you can easily graph!</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">ggplot</span>(table1, <span class="kw">aes</span>(year, cases)) +
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> country), <span class="dt">color =</span> <span class="st">&quot;gray30&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> country)) +
+<span class="st">  </span><span class="kw">theme_minimal</span>()</code></pre></div>
+<p><img src="tidyr_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="or-using-our-tidy-fao-data-we-can-see-how-much-acreage-there-was-over-time" class="section level4">
+<h4>Or, using our tidy FAO data, we can see how much acreage there was over time</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FAO3 &lt;-<span class="st"> </span>FAO2 %&gt;%<span class="st"> </span><span class="kw">filter</span>(Item ==<span class="st"> &quot;Cassava&quot;</span>)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">ggplot</span>(FAO3, <span class="kw">aes</span>(Year, Value)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> Country)) +
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Area planted (ha)&quot;</span>) +
+<span class="st">  </span><span class="kw">theme_minimal</span>()</code></pre></div>
+<p><img src="tidyr_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+</div>
+<div id="getting-un-tidy-data-into-shape" class="section level3">
+<h3>Getting un-tidy data into shape</h3>
+<div id="spreading-and-gathering" class="section level4">
+<h4>Spreading and gathering</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table4a</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   country     `1999` `2000`
+## * &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table4a_2 &lt;-<span class="st"> </span>table4a %&gt;%<span class="st"> </span><span class="kw">gather</span> (<span class="st">&quot;1999&quot;</span>, <span class="st">&quot;2000&quot;</span>, <span class="dt">key =</span> <span class="st">&quot;year&quot;</span>, <span class="dt">value=</span> <span class="st">&quot;cases&quot;</span>)
+table4a_2</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan 1999     745
+## 2 Brazil      1999   37737
+## 3 China       1999  212258
+## 4 Afghanistan 2000    2666
+## 5 Brazil      2000   80488
+## 6 China       2000  213766</code></pre>
+<p>spread</p>
+</div>
+<div id="seperating-and-uniting" class="section level4">
+<h4>Seperating and uniting</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MessyFAO &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;FAOSTAT_data.csv&quot;</span>)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Country = col_character(),
+##   Element = col_character(),
+##   Item = col_character(),
+##   Year = col_integer(),
+##   Unit = col_character(),
+##   Value = col_integer()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MessyFAO2 &lt;-<span class="st"> </span>MessyFAO %&gt;%<span class="st"> </span><span class="kw">unite</span>(Area,Value,Unit, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>) 
+MessyFAO2</code></pre></div>
+<pre><code>## # A tibble: 40 x 5
+##    Country  Element        Item     Year Area    
+##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;   
+##  1 Cambodia Area harvested Bananas  2007 30000_ha
+##  2 Cambodia Area harvested Bananas  2008 32000_ha
+##  3 Cambodia Area harvested Bananas  2009 33000_ha
+##  4 Cambodia Area harvested Bananas  2010 35002_ha
+##  5 Cambodia Area harvested Bananas  2011 32574_ha
+##  6 Cambodia Area harvested Bananas  2012 31844_ha
+##  7 Cambodia Area harvested Bananas  2013 31757_ha
+##  8 Cambodia Area harvested Bananas  2014 31741_ha
+##  9 Cambodia Area harvested Bananas  2015 31786_ha
+## 10 Cambodia Area harvested Bananas  2016 31875_ha
+## # ... with 30 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MessyFAO3 &lt;-<span class="st"> </span>MessyFAO2 %&gt;%<span class="st"> </span><span class="kw">separate</span>(Area, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;Value&quot;</span>, <span class="st">&quot;Unit&quot;</span>))
+MessyFAO3</code></pre></div>
+<pre><code>## # A tibble: 40 x 6
+##    Country  Element        Item     Year Value Unit 
+##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;   &lt;int&gt; &lt;chr&gt; &lt;chr&gt;
+##  1 Cambodia Area harvested Bananas  2007 30000 ha   
+##  2 Cambodia Area harvested Bananas  2008 32000 ha   
+##  3 Cambodia Area harvested Bananas  2009 33000 ha   
+##  4 Cambodia Area harvested Bananas  2010 35002 ha   
+##  5 Cambodia Area harvested Bananas  2011 32574 ha   
+##  6 Cambodia Area harvested Bananas  2012 31844 ha   
+##  7 Cambodia Area harvested Bananas  2013 31757 ha   
+##  8 Cambodia Area harvested Bananas  2014 31741 ha   
+##  9 Cambodia Area harvested Bananas  2015 31786 ha   
+## 10 Cambodia Area harvested Bananas  2016 31875 ha   
+## # ... with 30 more rows</code></pre>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
