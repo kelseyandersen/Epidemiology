@@ -292,9 +292,11 @@ div.tocify {
 <li>
   <a href="IntrotoR.html">Data Visualization and Workflow</a>
 </li>
-<li class="dropdown-header">Data Import and Tidy</li>
 <li>
-  <a href="tidyr.html"></a>
+  <a href="dplyr.Rmd">Dplyr and Scripts</a>
+</li>
+<li>
+  <a href="tidyr.html">Data Import and Tidy</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -341,16 +343,9 @@ div.tocify {
 <li>reads in data directly as a tibble</li>
 </ul></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)</code></pre></div>
-<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
-## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
-## ✔ tidyr   0.8.0     ✔ stringr 1.2.0
-## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FAO1 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;FAOSTAT_data.csv&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+
+FAO1 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;FAOSTAT_data.csv&quot;</span>)</code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   Country = col_character(),

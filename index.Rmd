@@ -2,7 +2,7 @@
 title: "Welcome!"
 ---
 
-### Epidem & Data Sci 
+### Epidemiology & Data Science
 
 PLP6905 
 Gainesville: section 4H93
